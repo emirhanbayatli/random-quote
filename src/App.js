@@ -6,29 +6,35 @@ import { useState } from "react";
 function App() {
   const [quotes, setquotes] = useState(initialQuotes);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [count, setCount] = useState(0);
 
   function handleClick() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     setCurrentIndex(randomIndex);
   }
   function handleLike() {
-    let counter = initialQuotes[currentIndex].likeCount === count;
-    setCount(counter + 1);
-    console.log(counter);
+    const updatedQuotes = quotes.map((quote, index) => {
+      if (currentIndex === index) {
+        return { ...quote, likeCount: quote.likeCount + 1 };
+      } else return quote;
+    });
+    setquotes(updatedQuotes);
   }
 
-  console.log(initialQuotes[currentIndex].count);
+  console.log(quotes[currentIndex].likeCount);
 
   return (
     <div className="App">
       <QuoteCard
-        quote={initialQuotes[currentIndex].quote}
-        author={initialQuotes[currentIndex].author}
-        count={initialQuotes[currentIndex].count}
+        quote={quotes[currentIndex].quote}
+        author={quotes[currentIndex].author}
+        likeCount={quotes[currentIndex].likeCount}
       />
-      <button onClick={handleClick}>Get Random Quote</button>
-      <button onClick={handleLike}>Like</button>
+      <button className="btn" onClick={handleClick}>
+        Get Random Quote
+      </button>
+      <button className="btn btn-like" onClick={handleLike}>
+        Like
+      </button>
     </div>
   );
 }
