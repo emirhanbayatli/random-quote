@@ -206,5 +206,5 @@ export const quotes = [
 ];
 
 for (let i = 0; i < quotes.length; i++) {
-  quotes[i].count = 0;
+  quotes[i].likeCount = 0;
 }

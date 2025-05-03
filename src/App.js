@@ -13,7 +13,7 @@ function App() {
     setCurrentIndex(randomIndex);
   }
   function handleLike() {
-    let counter = initialQuotes[currentIndex].count === count;
+    let counter = initialQuotes[currentIndex].likeCount === count;
     setCount(counter + 1);
     console.log(counter);
   }
