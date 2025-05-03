@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { QuoteCard } from "./Components/QuoteCard/index.js";
+import { quotes as initialQuotes } from "./quotes.js";
+import { useState } from "react";
 
 function App() {
+  const [quotes, setquotes] = useState(initialQuotes);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    setCurrentIndex(randomIndex);
+  }
+  function handleLike() {
+    let counter = initialQuotes[currentIndex].count === count;
+    setCount(counter + 1);
+    console.log(counter);
+  }
+
+  console.log(initialQuotes[currentIndex].count);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <QuoteCard
+        quote={initialQuotes[currentIndex].quote}
+        author={initialQuotes[currentIndex].author}
+        count={initialQuotes[currentIndex].count}
+      />
+      <button onClick={handleClick}>Get Random Quote</button>
+      <button onClick={handleLike}>Like</button>
     </div>
   );
 }
