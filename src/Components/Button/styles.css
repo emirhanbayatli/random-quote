@@ -24,3 +24,12 @@
 .btn-like:hover {
   background-color: #45a049;
 }
+
+.btn-nav {
+  background-color: #263238;
+  color: white;
+}
+
+.btn-nav:hover {
+  background-color: #455A64
+}
