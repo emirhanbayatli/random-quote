@@ -1,14 +1,67 @@
-import { QuoteCard } from '../../Components/QuoteCard'; 
-import { Button } from '../../Components/Button';
+import { QuoteCard } from "../../components/QuoteCard";
+import { Button } from "../../components/Button";
+import { useQuotesContext } from "../../QuotesContextProvider";
+import {
+  useQuoteIndexContext,
+  useQuoteIndexDispatchContext,
+} from "../../QuoteIndexContextProvider";
+import { useState } from "react";
+import { useFavoritesContext } from "../../FavoritesContext";
 
-export const MainPage = ({quote , author ,likeCount, handleNextQuoteClick , handleLikeQuoteClick}) =>{
-  return(
+export const MainPage = () => {
+  const quotes = useQuotesContext();
+  const currentIndex = useQuoteIndexContext();
+  const dispatchQuoteIndex = useQuoteIndexDispatchContext();
+  const [updatedQuotes, setUpdatedQuotes] = useState(quotes);
+  const { favorites, handleAddToFavorites } = useFavoritesContext();
+
+  function handleNextQuoteClick() {
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    dispatchQuoteIndex(randomIndex);
+  }
+  function handleLike() {
+    const newQuotes = updatedQuotes.map((quote, index) => {
+      if (currentIndex === index) {
+        return { ...quote, likeCount: quote.likeCount + 1 };
+      } else return quote;
+    });
+    setUpdatedQuotes(newQuotes);
+  }
+  return (
     <main>
-      <h1>Random Quote Generator</h1>
-      <QuoteCard quote={quote} author={author} likeCount={likeCount} />
-      <Button label="Next Quote" handleOnClick={handleNextQuoteClick} className="btn"/>
-      <Button label="Like" handleOnClick={handleLikeQuoteClick} className="btn btn-like" />
-    </main>
+      <QuoteCard
+        quote={quotes[currentIndex].quote}
+        author={quotes[currentIndex].author}
+        likeCount={updatedQuotes[currentIndex].likeCount}
+      />
 
+      <Button
+        label="Next quote"
+        handleOnClick={handleNextQuoteClick}
+        className="btn"
+      />
+      <Button
+        label="Like"
+        handleOnClick={handleLike}
+        className="btn btn-like"
+      />
+      <Button
+        label="Add Favorites"
+        handleOnClick={handleAddToFavorites}
+        className="btn"
+      />
+      <h1>Your Favorite List</h1>
+      {favorites.length > 0 ? (
+        favorites.map((favorite, index) => (
+          <QuoteCard
+            key={index}
+            quote={favorite.quote}
+            author={favorite.author}
+          />
+        ))
+      ) : (
+        <p>No favorites added yet.</p>
+      )}
+    </main>
   );
 };
