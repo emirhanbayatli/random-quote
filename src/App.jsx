@@ -1,4 +1,3 @@
-import "./App.css";
 import { useState } from "react";
 import { MainPage } from "./pages/MainPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -13,7 +12,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(pages.home);
 
   return (
-    <div className="App">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <Navbar setCurrentPage={setCurrentPage} pages={pages} />
       {currentPage === pages.home && <MainPage />}
       {currentPage === pages.profile && <ProfilePage />}

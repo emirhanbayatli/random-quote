@@ -32,24 +32,18 @@ export const MainPage = () => {
       <QuoteCard
         quote={quotes[currentIndex].quote}
         author={quotes[currentIndex].author}
+        like="Likes :"
         likeCount={updatedQuotes[currentIndex].likeCount}
       />
 
-      <Button
-        label="Next quote"
-        handleOnClick={handleNextQuoteClick}
-        className="btn"
-      />
+      <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
       <Button
         label="Like"
         handleOnClick={handleLike}
-        className="btn btn-like"
+        className="bg-green-400 hover:bg-green-500"
       />
-      <Button
-        label="Add Favorites"
-        handleOnClick={handleAddToFavorites}
-        className="btn"
-      />
+
+      <Button label="Add Favorites" handleOnClick={handleAddToFavorites} />
       <h1>Your Favorite List</h1>
       {favorites.length > 0 ? (
         favorites.map((favorite, index) => (
