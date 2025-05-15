@@ -5,16 +5,13 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QuotesContextProvider } from "./QuotesContextProvider";
 import { QuoteIndexContextProvider } from "./QuoteIndexContextProvider";
-import { FavoritesContextProvider } from "./FavoritesContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
     <QuotesContextProvider>
       <QuoteIndexContextProvider>
-        <FavoritesContextProvider>
-          <App />
-        </FavoritesContextProvider>
+        <App />
       </QuoteIndexContextProvider>
     </QuotesContextProvider>
   </React.StrictMode>,
