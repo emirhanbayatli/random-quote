@@ -1,6 +1,6 @@
 import { QuoteCard } from "../../components/QuoteCard";
-import { Button } from "../../components/Button";
 import { useQuotesContext } from "../../QuotesContextProvider";
+import { Button } from "../../components/Button/index.jsx";
 import {
   useQuoteIndexContext,
   useQuoteIndexDispatchContext,
@@ -46,17 +46,9 @@ export const MainPage = () => {
       />
 
       <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
-      <Button
-        label="Like"
-        handleOnClick={handleLike}
-        className="bg-green-400 hover:bg-green-500"
-      />
+      <Button label="Like" handleOnClick={handleLike} />
 
-      <Button
-        label="Add Favorites"
-        handleOnClick={handleFavorite}
-        className="btn"
-      />
+      <Button handleOnClick={handleFavorite} label="Add the Favorites" />
 
       <h1>Your Favorite List</h1>
       {quotes.some((quote) => quote.isFavorite) ? (
