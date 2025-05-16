@@ -12,7 +12,7 @@ export const MainPage = () => {
   const quotes = useQuotesContext();
   const currentIndex = useQuoteIndexContext();
   const dispatchQuoteIndex = useQuoteIndexDispatchContext();
-
+  const isFavorite = quotes[currentIndex]?.isFavorite;
   function handleNextQuoteClick() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
     dispatchQuoteIndex(randomIndex);
@@ -48,7 +48,10 @@ export const MainPage = () => {
       />
       <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
       <Button label="Like" handleOnClick={handleLike} />
-      <Button handleOnClick={handleFavorite} label="Add the Favorites" />
+      <Button
+        handleOnClick={handleFavorite}
+        label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      />
 
       <h1>Your Favorite List</h1>
       {quotes.some((quote) => quote.isFavorite) ? (
