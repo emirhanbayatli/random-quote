@@ -6,7 +6,7 @@ export function Navbar({ setCurrentPage, pages }) {
   ];
   return (
     <nav className="bg-slate-100 text-slate-900 p-4 ">
-      <ul className="flex gap-4 justify-evenly">
+      <ul className="max-w-screen-md mx-auto flex gap-4 justify-start">
         {items.map((item) => (
           <li key={item.id}>
             <button
