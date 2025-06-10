@@ -1,6 +1,6 @@
-import { QuoteCard } from "../../Components/QuoteCard";
+import { QuoteCard } from "../../components/QuoteCard";
 import { useQuotesContext } from "../../QuotesContextProvider";
-import { Button } from "../../Components/Button";
+import { Button } from "../../components/Button";
 import {
   useQuoteIndexContext,
   useQuoteIndexDispatchContext,
