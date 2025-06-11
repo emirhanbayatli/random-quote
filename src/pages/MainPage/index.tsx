@@ -12,30 +12,43 @@ export const MainPage = () => {
   const quotes = useQuotesContext();
   const currentIndex = useQuoteIndexContext();
   const dispatchQuoteIndex = useQuoteIndexDispatchContext();
+
+  if (!quotes || currentIndex === undefined) {
+    throw new Error("Quotes or current index is undefined");
+  }
+
   const isFavorite = quotes[currentIndex]?.isFavorite;
+
   function handleNextQuoteClick() {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    dispatchQuoteIndex(randomIndex);
+    const randomIndex = Math.floor(Math.random() * quotes!.length);
+
+    if (dispatchQuoteIndex) {
+      dispatchQuoteIndex(randomIndex);
+    }
   }
 
   function handleLike() {
-    const newQuotes = quotes.map((quote, index) => {
+    const newQuotes = (quotes ?? []).map((quote, index) => {
       if (currentIndex === index) {
         return { ...quote, likeCount: quote.likeCount + 1 };
       }
       return quote;
     });
-    dispatchQuotes(newQuotes);
+    if (dispatchQuotes) {
+      dispatchQuotes(newQuotes);
+    }
   }
 
   function handleFavorite() {
-    const updatedQuotes = quotes.map((quote, index) => {
+    const updatedQuotes = (quotes ?? []).map((quote, index) => {
       if (currentIndex === index) {
         return { ...quote, isFavorite: !quote.isFavorite };
       }
       return quote;
     });
-    dispatchQuotes(updatedQuotes);
+    if (dispatchQuotes) {
+      dispatchQuotes(updatedQuotes);
+    }
   }
 
   return (
@@ -46,11 +59,16 @@ export const MainPage = () => {
         author={quotes[currentIndex].author}
         likeCount={"Like : " + quotes[currentIndex].likeCount}
       />
-      <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
-      <Button label="Like" handleOnClick={handleLike} />
+      <Button
+        label="Next quote"
+        handleOnClick={handleNextQuoteClick}
+        className={""}
+      />
+      <Button label="Like" handleOnClick={handleLike} className={""} />
       <Button
         handleOnClick={handleFavorite}
         label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        className={""}
       />
 
       <h1>Your Favorite List</h1>
@@ -58,7 +76,12 @@ export const MainPage = () => {
         quotes
           .filter((quote) => quote.isFavorite)
           .map((quote, index) => (
-            <QuoteCard key={index} quote={quote.quote} author={quote.author} />
+            <QuoteCard
+              key={index}
+              quote={quote.quote}
+              author={quote.author}
+              likeCount={"Like : " + quote.likeCount}
+            />
           ))
       ) : (
         <p>No favorites added yet.</p>

@@ -1,4 +1,5 @@
-export const Button = ({ label, handleOnClick, className }) => {
+import { BtnProps } from "../../types";
+export const Button = ({ label, handleOnClick, className }: BtnProps) => {
   return (
     <button
       className={` 
