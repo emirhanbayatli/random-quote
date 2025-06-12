@@ -20,7 +20,7 @@ export const MainPage = () => {
   const isFavorite = quotes[currentIndex]?.isFavorite;
 
   function handleNextQuoteClick() {
-    const randomIndex = Math.floor(Math.random() * quotes!.length);
+    const randomIndex = Math.floor(Math.random() * (quotes?.length ?? 0));
 
     if (dispatchQuoteIndex) {
       dispatchQuoteIndex(randomIndex);
@@ -59,16 +59,11 @@ export const MainPage = () => {
         author={quotes[currentIndex].author}
         likeCount={"Like : " + quotes[currentIndex].likeCount}
       />
-      <Button
-        label="Next quote"
-        handleOnClick={handleNextQuoteClick}
-        className={""}
-      />
-      <Button label="Like" handleOnClick={handleLike} className={""} />
+      <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
+      <Button label="Like" handleOnClick={handleLike} />
       <Button
         handleOnClick={handleFavorite}
         label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        className={""}
       />
 
       <h1>Your Favorite List</h1>
