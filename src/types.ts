@@ -1,9 +1,9 @@
 export interface Quote {
   quote: string;
   author: string;
-  likeCount: number;
+  likedBy: number;
   isFavorite?: boolean;
-  id?: string;
+  id: string;
 }
 
 export interface NavbarProps {
@@ -23,5 +23,5 @@ export interface BtnProps {
 export interface QuoteCardProps {
   quote: string;
   author: string;
-  likeCount: string;
+  likedBy: number;
 }

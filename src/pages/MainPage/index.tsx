@@ -6,12 +6,15 @@ import {
   useQuoteIndexDispatchContext,
 } from "../../QuoteIndexContextProvider";
 import { useQuotesDispatchContext } from "../../QuotesContextProvider";
+import { QuotesActionType } from "../../QuotesContextProvider";
+import { useState } from "react";
 
 export const MainPage = () => {
   const dispatchQuotes = useQuotesDispatchContext();
   const quotes = useQuotesContext();
   const currentIndex = useQuoteIndexContext();
   const dispatchQuoteIndex = useQuoteIndexDispatchContext();
+  const [error, setError] = useState("");
 
   if (!quotes || currentIndex === undefined) {
     throw new Error("Quotes or current index is undefined");
@@ -26,28 +29,40 @@ export const MainPage = () => {
       dispatchQuoteIndex(randomIndex);
     }
   }
-
+  const dispatch = useQuotesDispatchContext();
+  const currentQute = quotes[currentIndex];
   function handleLike() {
-    const newQuotes = (quotes ?? []).map((quote, index) => {
-      if (currentIndex === index) {
-        return { ...quote, likeCount: quote.likeCount + 1 };
-      }
-      return quote;
-    });
-    if (dispatchQuotes) {
-      dispatchQuotes(newQuotes);
+    if (dispatch) {
+      dispatch({
+        type: QuotesActionType.LIKE_QUOTE,
+        payload: { quote: currentQute.quote },
+      });
+    }
+  }
+
+  function handleDislike() {
+    if (currentQute.likedBy <= 0) {
+      setError("Cannot dislike the quote.");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
+      return;
+    }
+
+    if (dispatch) {
+      dispatch({
+        type: QuotesActionType.DISLIKE_QUOTE,
+        payload: { quote: currentQute.quote },
+      });
     }
   }
 
   function handleFavorite() {
-    const updatedQuotes = (quotes ?? []).map((quote, index) => {
-      if (currentIndex === index) {
-        return { ...quote, isFavorite: !quote.isFavorite };
-      }
-      return quote;
-    });
-    if (dispatchQuotes) {
-      dispatchQuotes(updatedQuotes);
+    if (dispatch) {
+      dispatch({
+        type: QuotesActionType.ADD_FAVORITE_QUOTE,
+        payload: { quote: currentQute.quote },
+      });
     }
   }
 
@@ -57,10 +72,12 @@ export const MainPage = () => {
       <QuoteCard
         quote={quotes[currentIndex].quote}
         author={quotes[currentIndex].author}
-        likeCount={"Like : " + quotes[currentIndex].likeCount}
+        likedBy={quotes[currentIndex].likedBy}
       />
-      <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
       <Button label="Like" handleOnClick={handleLike} />
+      <Button label="Dislike" handleOnClick={handleDislike} />
+
+      <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
       <Button
         handleOnClick={handleFavorite}
         label={isFavorite ? "Remove from favorites" : "Add to favorites"}
@@ -75,11 +92,17 @@ export const MainPage = () => {
               key={index}
               quote={quote.quote}
               author={quote.author}
-              likeCount={"Like : " + quote.likeCount}
+              likedBy={quote.likedBy}
             />
           ))
       ) : (
         <p>No favorites added yet.</p>
+      )}
+
+      {error && (
+        <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-3 max-w-lg mx-auto">
+          {error}
+        </p>
       )}
     </main>
   );
