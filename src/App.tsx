@@ -3,14 +3,18 @@ import { MainPage } from "./pages/MainPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { PostsPage } from "./pages/PostsPage";
 import { Navbar } from "./components/Navbar";
+import { CreateUserPage } from "./pages/CreateUserPage";
+import { SignInUserPage } from "./pages/SignInUserPage";
+
+export enum Page {
+  home = "Home",
+  profile = "Profile",
+  postsPage = "PostsPage",
+  createUserPage = "createUserPage",
+  SignInUserPage = "SignInUserPage",
+}
 
 function App() {
-  enum Page {
-    home = "Home",
-    profile = "Profile",
-    postsPage = "PostsPage",
-  }
-
   const [currentPage, setCurrentPage] = useState<Page>(Page.home);
 
   return (
@@ -20,6 +24,12 @@ function App() {
         {currentPage === Page.home && <MainPage />}
         {currentPage === Page.profile && <ProfilePage />}
         {currentPage === Page.postsPage && <PostsPage />}
+        {currentPage === Page.createUserPage && (
+          <CreateUserPage setCurrentPage={setCurrentPage} />
+        )}
+        {currentPage === Page.SignInUserPage && (
+          <SignInUserPage setCurrentPage={setCurrentPage} />
+        )}
       </div>
     </>
   );

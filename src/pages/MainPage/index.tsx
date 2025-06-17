@@ -7,14 +7,12 @@ import {
 } from "../../QuoteIndexContextProvider";
 import { useQuotesDispatchContext } from "../../QuotesContextProvider";
 import { QuotesActionType } from "../../QuotesContextProvider";
-import { useState } from "react";
 
 export const MainPage = () => {
   const dispatchQuotes = useQuotesDispatchContext();
   const quotes = useQuotesContext();
   const currentIndex = useQuoteIndexContext();
   const dispatchQuoteIndex = useQuoteIndexDispatchContext();
-  const [error, setError] = useState("");
 
   if (!quotes || currentIndex === undefined) {
     throw new Error("Quotes or current index is undefined");
@@ -41,14 +39,6 @@ export const MainPage = () => {
   }
 
   function handleDislike() {
-    if (currentQute.likedBy <= 0) {
-      setError("Cannot dislike the quote.");
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-      return;
-    }
-
     if (dispatch) {
       dispatch({
         type: QuotesActionType.DISLIKE_QUOTE,
@@ -75,7 +65,12 @@ export const MainPage = () => {
         likedBy={quotes[currentIndex].likedBy}
       />
       <Button label="Like" handleOnClick={handleLike} />
-      <Button label="Dislike" handleOnClick={handleDislike} />
+      <Button
+        label="Dislike"
+        handleOnClick={handleDislike}
+        disabled={currentQute.likedBy <= 0 ? true : false}
+        className="disabled:opacity-50 disabled:cursor-not-allowed"
+      />
 
       <Button label="Next quote" handleOnClick={handleNextQuoteClick} />
       <Button
@@ -97,12 +92,6 @@ export const MainPage = () => {
           ))
       ) : (
         <p>No favorites added yet.</p>
-      )}
-
-      {error && (
-        <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-3 max-w-lg mx-auto">
-          {error}
-        </p>
       )}
     </main>
   );

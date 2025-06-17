@@ -3,7 +3,11 @@ export function Navbar({ setCurrentPage, pages }: NavbarProps) {
   const items = [
     { id: 1, name: "Home", onClick: () => setCurrentPage(pages.home) },
     { id: 2, name: "Profile", onClick: () => setCurrentPage(pages.profile) },
-    { id: 3, name: "Login" },
+    {
+      id: 3,
+      name: "Sign In",
+      onClick: () => setCurrentPage(pages.SignInUserPage),
+    },
     {
       id: 4,
       name: "Posts Page",

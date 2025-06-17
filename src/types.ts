@@ -1,3 +1,5 @@
+import type { User } from "firebase/auth";
+import type { ReactNode } from "react";
 export interface Quote {
   quote: string;
   author: string;
@@ -17,11 +19,24 @@ export interface NavbarProps {
 
 export interface BtnProps {
   label: string;
-  handleOnClick: () => void;
+  handleOnClick?: () => void;
   className?: string;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 export interface QuoteCardProps {
   quote: string;
   author: string;
   likedBy: number;
 }
+
+export type AuthContextType = {
+  user: User | null;
+  logIn: (email: string, password: string) => Promise<any>;
+  createAccount: (email: string, password: string) => Promise<any>;
+  logOut: () => Promise<void>;
+};
+
+export type AuthProviderProps = {
+  children: ReactNode;
+};

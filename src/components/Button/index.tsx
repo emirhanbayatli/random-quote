@@ -1,5 +1,11 @@
 import { BtnProps } from "../../types";
-export const Button = ({ label, handleOnClick, className }: BtnProps) => {
+export const Button = ({
+  label,
+  handleOnClick,
+  className,
+  disabled,
+  type,
+}: BtnProps) => {
   return (
     <button
       className={` 
@@ -8,6 +14,8 @@ export const Button = ({ label, handleOnClick, className }: BtnProps) => {
   rounded-lg hover:bg-slate-500 hover:text-slate-900 
   text-white ${className}`}
       onClick={handleOnClick}
+      disabled={disabled}
+      type={type}
     >
       {label}
     </button>
