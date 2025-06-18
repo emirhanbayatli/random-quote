@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { QuoteCard } from "./../components/QuoteCard";
 import { useState } from "react";
+import { Button } from "../components/Button";
 
 export const PostsPage = () => {
   const [posts, setPosts] = useState([]);
@@ -33,24 +34,9 @@ export const PostsPage = () => {
   return (
     <main>
       <div className="flex justify-center gap-10 my-4">
-        <button
-          onClick={handleFetchPosts}
-          className="text-gray-50 p-2 border rounded bg-gray-600"
-        >
-          Fetch posts
-        </button>
-        <button
-          onClick={handleClearPosts}
-          className="text-gray-50 p-2 border rounded bg-gray-600"
-        >
-          Clear posts
-        </button>
-        <button
-          onClick={handleToggle}
-          className="text-gray-50 p-2 border rounded bg-gray-600"
-        >
-          Togle
-        </button>
+        <Button handleOnClick={handleFetchPosts} label="Fetch posts" />
+        <Button handleOnClick={handleClearPosts} label="Clear posts" />
+        <Button handleOnClick={handleToggle} label="Togle" />
       </div>
 
       {posts && posts.length > 0 ? (

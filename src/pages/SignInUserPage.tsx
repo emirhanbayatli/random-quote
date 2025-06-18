@@ -1,33 +1,42 @@
 import { Page } from "../App";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Button } from "../components/Button";
 import { AuthContext } from "../AuthContext";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 export function SignInUserPage({
   setCurrentPage,
 }: {
   setCurrentPage: (page: Page) => void;
 }) {
+  const logIn = useContext(AuthContext);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
-  const authContext = useContext(AuthContext);
+
+  useEffect(() => {
+    if (message) {
+      const timeout = setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [message]);
 
   function handleSignIn(event: React.FormEvent) {
     event.preventDefault();
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        setMessage("Sign in successful.");
-        const user = userCredential.user;
-        setCurrentPage(Page.home);
-      })
-      .catch((error) => {
-        setMessage("Sign in failed. Please check your email and password. ");
-        console.error("Error signing in ben yazdim:", error);
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
+    if (email && password) {
+      logIn
+        ?.logIn(email, password)
+        .then(() => {
+          setMessage("Sign in successful.");
+          setCurrentPage(Page.home);
+        })
+        .catch((error) => {
+          console.error("Sign in error:", error);
+          setMessage("Sign in failed. Please check your email and password.");
+        });
+    }
   }
 
   return (
@@ -70,17 +79,19 @@ export function SignInUserPage({
         </div>
 
         {message && (
-          <p className="text-center text-sm text-red-600">{message}</p>
+          <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-3 max-w-lg mx-auto">
+            {message}
+          </p>
         )}
 
         <Button type="submit" label="Sign In" className="py-3" />
       </form>
-      <a
-        onClick={() => setCurrentPage(Page.createUserPage)}
-        className="cursor-pointer "
-      >
-        Don't have an account?
-      </a>
+
+      <Button
+        className="cursor-pointer mt-2"
+        handleOnClick={() => setCurrentPage(Page.createUserPage)}
+        label=" Don't have an account?"
+      />
     </main>
   );
 }

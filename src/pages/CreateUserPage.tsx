@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../AuthContext";
 import { Button } from "../components/Button";
 import { Page } from "../App";
@@ -12,7 +12,15 @@ export const CreateUserPage = ({
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
   const authContext = useContext(AuthContext);
+  useEffect(() => {
+    if (message) {
+      const timeout = setTimeout(() => {
+        setMessage(null);
+      }, 3000);
 
+      return () => clearTimeout(timeout);
+    }
+  }, [message]);
   function handleSubmit(e?: React.FormEvent) {
     if (e) e.preventDefault();
     if (password && password.length < 6) {
@@ -25,6 +33,7 @@ export const CreateUserPage = ({
         .createAccount(email, password)
         .then((res: any) => {
           setMessage("Account created successfully.");
+          setCurrentPage(Page.home);
         })
         .catch((error) => {
           console.log(error);
@@ -73,17 +82,18 @@ export const CreateUserPage = ({
         </div>
 
         {message && (
-          <p className="text-center text-sm text-red-600">{message}</p>
+          <p className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-3 max-w-lg mx-auto">
+            {message}
+          </p>
         )}
 
         <Button type="submit" label="Create Account" className="py-3" />
       </form>
-      <a
-        className="cursor-pointer"
-        onClick={() => setCurrentPage(Page.SignInUserPage)}
-      >
-        Already have an account? Sign in
-      </a>
+      <Button
+        className="cursor-pointer mt-2"
+        handleOnClick={() => setCurrentPage(Page.SignInUserPage)}
+        label="Already have an account? Sign in"
+      />
     </main>
   );
 };

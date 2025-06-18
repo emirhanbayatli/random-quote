@@ -5,6 +5,7 @@ import { PostsPage } from "./pages/PostsPage";
 import { Navbar } from "./components/Navbar";
 import { CreateUserPage } from "./pages/CreateUserPage";
 import { SignInUserPage } from "./pages/SignInUserPage";
+import { auth } from "./firebase";
 
 export enum Page {
   home = "Home",
@@ -15,7 +16,7 @@ export enum Page {
 }
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>(Page.home);
+  const [currentPage, setCurrentPage] = useState<Page>(Page.SignInUserPage);
 
   return (
     <>
