@@ -1,4 +1,5 @@
 import { Quote } from "./types";
+
 export const quotes: Quote[] = [
   {
     id: "q1a2b3",

@@ -1,8 +1,8 @@
 import { createContext, useReducer, useContext, Dispatch } from "react";
-import { quotes as intialQuotes } from "./quotes";
 import { ReactNode } from "react";
 import { Quote } from "./types";
-
+import { quotes as intialQuotes } from "./quotes";
+import { getQuotesToDB } from "./utils";
 export const QuotesContext = createContext<Quote[] | undefined>(undefined);
 
 export const QuotesDispatchContext = createContext<
@@ -18,7 +18,9 @@ export const QuotesContextProvider = ({
   children,
 }: QuotesContextProviderProps) => {
   // const [quotes, setQuotes] = useState(intialQuotes);
-  const [quotes, dispatch] = useReducer(quotesReducer, intialQuotes);
+
+  const [quotes, dispatch] = useReducer(quotesReducer, []);
+  // console.log(intialQuotes + "intialQuotes");
 
   return (
     <QuotesContext.Provider value={quotes}>
@@ -29,6 +31,7 @@ export const QuotesContextProvider = ({
   );
 };
 export enum QuotesActionType {
+  GET_QUOTES = "GET_QUOTES",
   SET_QUOTES = "SET_QUOTES",
   LIKE_QUOTE = "LIKE_QUOTE",
   DISLIKE_QUOTE = "DISLIKE_QUOTE",
@@ -37,6 +40,11 @@ export enum QuotesActionType {
   DELETE_QUOTE = "DELETE_QUOTE",
   ADD_FAVORITE_QUOTE = "ADD_FAVORITE_QUOTE",
 }
+
+type GetQuotesAction = {
+  type: QuotesActionType.GET_QUOTES;
+  payload: Quote[];
+};
 
 type SetQuotesAction = {
   type: QuotesActionType.SET_QUOTES;
@@ -59,9 +67,15 @@ type AddFavoriteQuoteAction = {
 
 function quotesReducer(
   state: Quote[],
-  action: SetQuotesAction | LikeDislikeQuoteAction | AddFavoriteQuoteAction,
+  action:
+    | SetQuotesAction
+    | LikeDislikeQuoteAction
+    | AddFavoriteQuoteAction
+    | GetQuotesAction,
 ): Quote[] {
   switch (action.type) {
+    case QuotesActionType.GET_QUOTES:
+
     case QuotesActionType.SET_QUOTES:
       return action.payload;
 
@@ -76,7 +90,6 @@ function quotesReducer(
       });
 
       return updatedQuotes;
-    // TODO: ADD Dislike quote action case
     case QuotesActionType.DISLIKE_QUOTE:
       console.log("Triggered dislike quote action");
       const updatedsQuotes = state.map((prevQuote: Quote) => {
