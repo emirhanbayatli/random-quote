@@ -1,8 +1,16 @@
-import { createContext, useReducer, useContext, Dispatch } from "react";
+import {
+  createContext,
+  useReducer,
+  useContext,
+  Dispatch,
+  useEffect,
+} from "react";
 import { ReactNode } from "react";
 import { Quote } from "./types";
-import { quotes as intialQuotes } from "./quotes";
-import { getQuotesToDB } from "./utils";
+import { getQuotes } from "./utils";
+import { onSnapshot, collection } from "firebase/firestore";
+import { db } from "./firebase";
+
 export const QuotesContext = createContext<Quote[] | undefined>(undefined);
 
 export const QuotesDispatchContext = createContext<
@@ -17,10 +25,30 @@ interface QuotesContextProviderProps {
 export const QuotesContextProvider = ({
   children,
 }: QuotesContextProviderProps) => {
-  // const [quotes, setQuotes] = useState(intialQuotes);
-
   const [quotes, dispatch] = useReducer(quotesReducer, []);
-  // console.log(intialQuotes + "intialQuotes");
+
+  useEffect(() => {
+    getQuotes()
+      .then((data) => {
+        dispatch({ type: QuotesActionType.GET_QUOTES, payload: data });
+      })
+      .catch((error) => {
+        console.error("An error occured when fetching all quotes", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "quotes"), (snapshot) => {
+      const quotesData = snapshot.docs.map((doc) => {
+        const { id, ...data } = doc.data() as Quote & { id?: string };
+        return { id: doc.id, ...data };
+      });
+
+      dispatch({ type: QuotesActionType.SET_QUOTES, payload: quotesData });
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <QuotesContext.Provider value={quotes}>
@@ -30,6 +58,7 @@ export const QuotesContextProvider = ({
     </QuotesContext.Provider>
   );
 };
+
 export enum QuotesActionType {
   GET_QUOTES = "GET_QUOTES",
   SET_QUOTES = "SET_QUOTES",

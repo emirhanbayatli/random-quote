@@ -6,6 +6,7 @@ export interface Quote {
   likedBy: number;
   isFavorite?: boolean;
   id: string;
+  whoAddQuote?: string;
 }
 
 export interface NavbarProps {
@@ -27,7 +28,7 @@ export interface BtnProps {
 export interface QuoteCardProps {
   quote: string;
   author: string;
-  likedBy: number;
+  likedBy?: number;
 }
 
 export type AuthContextType = {
@@ -35,8 +36,14 @@ export type AuthContextType = {
   logIn: (email: string, password: string) => Promise<any>;
   createAccount: (email: string, password: string) => Promise<any>;
   logOut: () => Promise<void>;
+  loading: boolean;
 };
 
 export type AuthProviderProps = {
   children: ReactNode;
 };
+
+export interface EditableQuoteCardProps {
+  quote: string;
+  author: string;
+}

@@ -29,6 +29,7 @@ export const MainPage = () => {
   }
   const dispatch = useQuotesDispatchContext();
   const currentQute = quotes[currentIndex];
+
   function handleLike() {
     if (dispatch) {
       dispatch({

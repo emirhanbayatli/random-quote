@@ -22,16 +22,16 @@ export const addQuotesToDb = (quotes: Quote[]) => {
 
 // database den tum veriyi alan function .
 
-export function getQuotesToDB() {
-  getDocs(collection(db, collections.quotes))
+export function getQuotes(): Promise<Quote[]> {
+  return getDocs(collection(db, collections.quotes))
     .then((querySnapshot) => {
-      const quotesFromDB = querySnapshot.forEach((doc) => {
-        console.log(doc.data());
-        return doc.data();
+      const quotesFromDB: Quote[] = querySnapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id } as Quote;
       });
+      return quotesFromDB;
     })
-    .catch((error) =>
-      console.error("An error occured when fetching all quotes", error),
-    );
+    .catch((error) => {
+      console.error("An error occured when fetching all quotes", error);
+      return [];
+    });
 }
-getQuotesToDB();
