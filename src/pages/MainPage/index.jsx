@@ -1,5 +1,5 @@
-import { QuoteCard } from "../../components/QuoteCard";
-import { Button } from "../../components/Button";
+import { QuoteCard } from "../../Components/QuoteCard";
+import { Button } from "../../Components/Button";
 import { useQuotesContext } from "../../QuotesContextProvider";
 import {
   useQuoteIndexContext,
@@ -42,7 +42,7 @@ export const MainPage = () => {
       <QuoteCard
         quote={quotes[currentIndex].quote}
         author={quotes[currentIndex].author}
-        likeCount={"Like : " + quotes[currentIndex].likeCount}
+        likeCount={quotes[currentIndex].likeCount}
       />
 
       <Button

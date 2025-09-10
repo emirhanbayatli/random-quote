@@ -4,7 +4,7 @@ export function QuoteCard({ quote, author, likeCount }) {
     <section className="quote-card">
       <p>{quote}</p>
       <p>{author}</p>
-      <p>{likeCount}</p>
+      <p>{"Like Count : " + likeCount}</p>
     </section>
   );
 }

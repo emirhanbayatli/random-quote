@@ -2,7 +2,7 @@ import "./App.css";
 import { useState } from "react";
 import { MainPage } from "./pages/MainPage";
 import { ProfilePage } from "./pages/ProfilePage";
-import { Navbar } from "./components/Navbar";
+import { Navbar } from "./Components/Navbar";
 
 function App() {
   const pages = {
