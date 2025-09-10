@@ -5,6 +5,5 @@ export const Button = ({ label, handleOnClick, className }) => {
       <button className={className} onClick={handleOnClick}>
         {label}
       </button>
-    </>
   );
 };
