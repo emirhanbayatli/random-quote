@@ -1,4 +1,8 @@
-import { BtnProps } from "../../types";
+interface BtnProps {
+  label: string;
+  handleOnClick: () => void;
+  className?: string;
+}
 export const Button = ({ label, handleOnClick, className }: BtnProps) => {
   return (
     <button

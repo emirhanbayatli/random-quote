@@ -2,25 +2,20 @@ import { useState } from "react";
 import { MainPage } from "./pages/MainPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { Navbar } from "./components/Navbar";
-
+import { Pages } from "./components/Navbar";
 function App() {
-
-  enum Page {
-    home = "Home",
-    profile = "Profile",
-
-  }
-
-
-  const [currentPage, setCurrentPage] = useState<Page>(Page.home);
+  const [currentPage, setCurrentPage] = useState<Pages>(Pages.Home);
 
   return (
     <>
-      <Navbar setCurrentPage={setCurrentPage} pages={Page} />
+      <Navbar
+        setCurrentPage={setCurrentPage}
+        pages={{ [Pages.Home]: {}, [Pages.Profile]: {} }}
+      />
+
       <div className="max-w-screen-xl mx-auto p-4 sm:p-6 lg:px-8 text-center">
-        {currentPage === Page.home && <MainPage />}
-        {currentPage === Page.profile && <ProfilePage />} 
-  
+        {currentPage === Pages.Home && <MainPage />}
+        {currentPage === Pages.Profile && <ProfilePage />}
       </div>
     </>
   );
