@@ -1,4 +1,8 @@
-import { QuoteCardProps } from "../../types";
+interface QuoteCardProps {
+  quote: string;
+  author: string;
+  likedBy?: number;
+}
 
 export const QuoteCard = ({ quote, author, likedBy }: QuoteCardProps) => {
   return (

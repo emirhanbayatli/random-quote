@@ -1,6 +1,13 @@
-import { NavbarProps } from "../../types";
 import { AuthContext } from "../../AuthContext";
 import { useContext, useState, useEffect } from "react";
+interface NavbarProps {
+  setCurrentPage: (page: any) => void;
+  pages: {
+    home: any;
+    profile: any;
+    [key: string]: any;
+  };
+}
 
 export function Navbar({ setCurrentPage, pages }: NavbarProps) {
   const authContext = useContext(AuthContext);

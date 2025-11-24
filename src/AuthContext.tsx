@@ -8,8 +8,18 @@ import { createContext, useEffect, useState } from "react";
 import { auth } from "./firebase";
 import type { User } from "firebase/auth";
 import { useContext } from "react";
-import type { AuthProviderProps } from "./types";
-import type { AuthContextType } from "./types";
+import type { ReactNode } from "react";
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
+type AuthContextType = {
+  user: User | null;
+  logIn: (email: string, password: string) => Promise<any>;
+  createAccount: (email: string, password: string) => Promise<any>;
+  logOut: () => Promise<void>;
+  loading: boolean;
+};
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 

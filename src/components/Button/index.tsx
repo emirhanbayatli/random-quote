@@ -1,4 +1,10 @@
-import { BtnProps } from "../../types";
+interface BtnProps {
+  label: string;
+  handleOnClick?: () => void;
+  className?: string;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+}
 export const Button = ({
   label,
   handleOnClick,
