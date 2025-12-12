@@ -7,9 +7,10 @@ import {
 } from "../../QuoteIndexContextProvider";
 import { useQuotesDispatchContext } from "../../QuotesContextProvider";
 import { QuotesActionType } from "../../QuotesContextProvider";
-import { toggleDislike, toggleLike } from "../../actions/firebaseAction";
+
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../AuthContext";
+import { toggleDislike, toggleLike } from "../../utils";
 
 export const MainPage = () => {
   const quotes = useQuotesContext();

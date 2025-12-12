@@ -3,11 +3,7 @@ import { AuthContext } from "../../AuthContext";
 import { Button } from "../../components/Button/index";
 import { QuoteCard } from "../../components/QuoteCard";
 import { useQuotesContext } from "../../QuotesContextProvider";
-import {
-  addQuote,
-  deleteQuote,
-  updateQuote,
-} from "../../actions/firebaseAction";
+import { addQuote, deleteQuote, updateQuote } from "../../utils";
 
 export const ProfilePage = () => {
   const authContext = useContext(AuthContext);
