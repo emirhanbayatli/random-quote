@@ -7,16 +7,35 @@ import {
 } from "../../QuoteIndexContextProvider";
 import { useQuotesDispatchContext } from "../../QuotesContextProvider";
 import { QuotesActionType } from "../../QuotesContextProvider";
+import { toggleDislike, toggleLike } from "../../actions/firebaseAction";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../AuthContext";
 
 export const MainPage = () => {
-  const dispatchQuotes = useQuotesDispatchContext();
   const quotes = useQuotesContext();
   const currentIndex = useQuoteIndexContext();
   const dispatchQuoteIndex = useQuoteIndexDispatchContext();
+  const authContext = useContext(AuthContext);
+
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const userID = authContext?.user?.uid;
 
   if (!quotes || currentIndex === undefined) {
     throw new Error("Quotes or current index is undefined");
   }
+
+  useEffect(() => {
+    if (message) {
+      const timeout = setTimeout(() => {
+        setMessage(null);
+        setError(null);
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [message, error]);
 
   const isFavorite = quotes[currentIndex]?.isFavorite;
 
@@ -30,21 +49,21 @@ export const MainPage = () => {
   const dispatch = useQuotesDispatchContext();
   const currentQute = quotes[currentIndex];
 
-  function handleLike() {
-    if (dispatch) {
-      dispatch({
-        type: QuotesActionType.LIKE_QUOTE,
-        payload: { quote: currentQute.quote },
-      });
+  async function handleLike() {
+    const result = await toggleLike(currentQute.id, userID as string);
+    if (result.success) {
+      setMessage(result.message);
+    } else {
+      setError(result.message);
     }
   }
 
-  function handleDislike() {
-    if (dispatch) {
-      dispatch({
-        type: QuotesActionType.DISLIKE_QUOTE,
-        payload: { quote: currentQute.quote },
-      });
+  async function handleDislike() {
+    const result = await toggleDislike(currentQute.id, userID as string);
+    if (result.success) {
+      setMessage(result.message);
+    } else {
+      setError(result.message);
     }
   }
 
@@ -63,13 +82,13 @@ export const MainPage = () => {
       <QuoteCard
         quote={quotes[currentIndex].quote}
         author={quotes[currentIndex].author}
-        likedBy={quotes[currentIndex].likedBy}
+        likedBy={quotes[currentIndex].likedBy.length}
+        dislikedBy={quotes[currentIndex].dislikedBy.length}
       />
       <Button label="Like" handleOnClick={handleLike} />
       <Button
         label="Dislike"
         handleOnClick={handleDislike}
-        disabled={currentQute.likedBy <= 0 ? true : false}
         className="disabled:opacity-50 disabled:cursor-not-allowed"
       />
 
@@ -88,11 +107,29 @@ export const MainPage = () => {
               key={index}
               quote={quote.quote}
               author={quote.author}
-              likedBy={quote.likedBy}
+              likedBy={quote.likedBy.length}
+              dislikedBy={quote.dislikedBy.length}
             />
           ))
       ) : (
         <p>No favorites added yet.</p>
+      )}
+
+      {message && (
+        <p
+          className={`text-sm mt-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded my-3 max-w-lg mx-auto text-center`}
+        >
+          {message}
+        </p>
+      )}
+      {error && (
+        <p
+          className={
+            "text-sm mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-3 max-w-lg mx-auto text-center"
+          }
+        >
+          {error}
+        </p>
       )}
     </main>
   );

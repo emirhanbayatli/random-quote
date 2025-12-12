@@ -1,23 +1,20 @@
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../AuthContext";
 import { Button } from "../../components/Button/index";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
 import { QuoteCard } from "../../components/QuoteCard";
 import { useQuotesContext } from "../../QuotesContextProvider";
+import {
+  addQuote,
+  deleteQuote,
+  updateQuote,
+} from "../../actions/firebaseAction";
 
 export const ProfilePage = () => {
   const authContext = useContext(AuthContext);
   const [quoteInput, setQuoteInput] = useState<string>("");
   const [authorInput, setAuthorInput] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [editQuoteId, setEditQuoteId] = useState<string | null>(null);
   const [editQuoteInput, setEditQuoteInput] = useState("");
@@ -27,68 +24,61 @@ export const ProfilePage = () => {
   const quotes = useQuotesContext();
   const userEmail = authContext?.user?.email?.toUpperCase().split("@")[0];
   const userID = authContext?.user?.uid;
-  const isMessagePositive = message?.includes("unsuccessfully") == false;
 
   useEffect(() => {
     if (message) {
       const timeout = setTimeout(() => {
         setMessage(null);
+        setError(null);
       }, 3000);
 
       return () => clearTimeout(timeout);
     }
-  }, [message]);
+  }, [message, error]);
 
-  async function addQuote(e: React.FormEvent) {
-    try {
-      e.preventDefault();
-      await addDoc(collection(db, "quotes"), {
-        author: authorInput,
-        quote: quoteInput,
-        likedBy: 0,
-        whoAddQuote: userID,
-      });
-
-      setMessage("Quote added successfully!");
+  async function handleAddQuote(e: React.FormEvent) {
+    e.preventDefault();
+    const result = await addQuote(authorInput, quoteInput, userID as string);
+    if (result.success) {
+      setMessage(result.message);
       setQuoteInput("");
       setAuthorInput("");
-    } catch (error) {
-      setMessage("Quote added unsuccessfully!");
-      console.log(error + "Quote added unsuccessfully!");
+    } else {
+      setError(result.message);
     }
   }
 
-  async function deleteQuote(id: string) {
-    try {
-      await deleteDoc(doc(db, "quotes", id));
-      setMessage("Quote deleted successfully!");
-    } catch (error) {
-      setMessage("Quote deleted unsuccessfully!!");
-      console.error("Quote deleted unsuccessfully! ", error);
+  async function handleDeleteQuote(id: string) {
+    const result = await deleteQuote(id, userID as string);
+    if (result.success) {
+      setMessage(result.message);
+    } else {
+      setError(result.message);
     }
   }
-
-  async function updateQuote(id: string, newAuthor: string, newQuote: string) {
-    const quoteRef = doc(db, "quotes", id);
-    try {
-      await updateDoc(quoteRef, {
-        author: newAuthor,
-        quote: newQuote,
-      });
-
-      setMessage("Quote updated successfully!!");
-    } catch (error) {
-      setMessage("Quote updated unsuccessfully!!");
+  async function handleUpdateQuote(
+    id: string,
+    newAuthor: string,
+    newQuote: string,
+  ) {
+    const result = await updateQuote(id, userID as string, newAuthor, newQuote);
+    if (result.success) {
+      setMessage(result.message);
+    } else {
+      setError(result.message);
     }
   }
-  console.log(editQuoteId + "editQuoteId");
 
   return (
     <main className="p-6 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Welcome {userEmail}!</h1>
 
       {addNewQuote === true ? (
-        <form className="space-y-4 mb-6" onSubmit={addQuote}>
+        <form
+          className="space-y-4 mb-6"
+          onSubmit={(e) => handleAddQuote(e)}
+          noValidate
+        >
           <input
             type="text"
             placeholder="Quote"
@@ -114,14 +104,14 @@ export const ProfilePage = () => {
 
       <section>
         {quotes?.map((quote) =>
-          quote.whoAddQuote === userID ? (
+          quote.createdBy === userID ? (
             <div key={quote.id} className="mb-4">
               {editQuoteId === quote.id ? (
                 <form
                   className="space-y-2"
                   onSubmit={async (e) => {
                     e.preventDefault();
-                    await updateQuote(
+                    await handleUpdateQuote(
                       quote.id,
                       editAuthorInput,
                       editQuoteInput,
@@ -154,11 +144,12 @@ export const ProfilePage = () => {
                   <QuoteCard
                     quote={quote.quote}
                     author={quote.author}
-                    likedBy={quote.likedBy}
+                    likedBy={quote.likedBy.length}
+                    dislikedBy={quote.dislikedBy.length}
                   />
                   <Button
                     label="Delete"
-                    handleOnClick={() => deleteQuote(quote.id)}
+                    handleOnClick={() => handleDeleteQuote(quote.id)}
                   />
                   <Button
                     label="Edit"
@@ -176,13 +167,18 @@ export const ProfilePage = () => {
       </section>
       {message && (
         <p
-          className={`text-sm mt-2 ${
-            isMessagePositive
-              ? "bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded my-3 max-w-lg mx-auto text-center"
-              : "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-3 max-w-lg mx-auto text-center"
-          }`}
+          className={`text-sm mt-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded my-3 max-w-lg mx-auto text-center`}
         >
           {message}
+        </p>
+      )}
+      {error && (
+        <p
+          className={
+            "text-sm mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-3 max-w-lg mx-auto text-center"
+          }
+        >
+          {error}
         </p>
       )}
     </main>

@@ -1,10 +1,11 @@
 export interface Quote {
   quote: string;
   author: string;
-  likedBy: number;
+  likedBy: string[];
+  dislikedBy: string[];
   isFavorite?: boolean;
   id: string;
-  whoAddQuote?: string;
+  createdBy?: string;
 }
 export interface EditableQuoteCardProps {
   quote: string;

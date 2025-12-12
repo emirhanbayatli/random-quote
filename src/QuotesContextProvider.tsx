@@ -14,8 +14,7 @@ import { db } from "./firebase";
 export const QuotesContext = createContext<Quote[] | undefined>(undefined);
 
 export const QuotesDispatchContext = createContext<
-  | Dispatch<SetQuotesAction | LikeDislikeQuoteAction | AddFavoriteQuoteAction>
-  | undefined
+  Dispatch<SetQuotesAction | AddFavoriteQuoteAction> | undefined
 >(undefined);
 
 interface QuotesContextProviderProps {
@@ -62,8 +61,7 @@ export const QuotesContextProvider = ({
 export enum QuotesActionType {
   GET_QUOTES = "GET_QUOTES",
   SET_QUOTES = "SET_QUOTES",
-  LIKE_QUOTE = "LIKE_QUOTE",
-  DISLIKE_QUOTE = "DISLIKE_QUOTE",
+
   ADD_NEW_QUOTE = "ADD_NEW_QUOTE",
   UPDATE_QUOTE = "UPDATE_QUOTE",
   DELETE_QUOTE = "DELETE_QUOTE",
@@ -80,13 +78,6 @@ type SetQuotesAction = {
   payload: Quote[];
 };
 
-type LikeDislikeQuoteAction = {
-  type: QuotesActionType.DISLIKE_QUOTE | QuotesActionType.LIKE_QUOTE;
-  payload: {
-    quote: string;
-  };
-};
-
 type AddFavoriteQuoteAction = {
   type: QuotesActionType.ADD_FAVORITE_QUOTE;
   payload: {
@@ -96,40 +87,13 @@ type AddFavoriteQuoteAction = {
 
 function quotesReducer(
   state: Quote[],
-  action:
-    | SetQuotesAction
-    | LikeDislikeQuoteAction
-    | AddFavoriteQuoteAction
-    | GetQuotesAction,
+  action: SetQuotesAction | AddFavoriteQuoteAction | GetQuotesAction,
 ): Quote[] {
   switch (action.type) {
     case QuotesActionType.GET_QUOTES:
 
     case QuotesActionType.SET_QUOTES:
       return action.payload;
-
-    case QuotesActionType.LIKE_QUOTE:
-      console.log("Triggered like quote action");
-      const updatedQuotes = state.map((prevQuote: Quote) => {
-        if (prevQuote.quote === action.payload.quote) {
-          return { ...prevQuote, likedBy: prevQuote.likedBy + 1 };
-        } else {
-          return prevQuote;
-        }
-      });
-
-      return updatedQuotes;
-    case QuotesActionType.DISLIKE_QUOTE:
-      console.log("Triggered dislike quote action");
-      const updatedsQuotes = state.map((prevQuote: Quote) => {
-        if (prevQuote.quote === action.payload.quote) {
-          return { ...prevQuote, likedBy: prevQuote.likedBy - 1 };
-        } else {
-          return prevQuote;
-        }
-      });
-
-      return updatedsQuotes;
 
     case QuotesActionType.ADD_FAVORITE_QUOTE:
       console.log("Triggered favorite quote action");
@@ -145,7 +109,7 @@ function quotesReducer(
 
     default:
       console.error(
-        `Unsupported Quotes Action Type used. Supported types: ${QuotesActionType.SET_QUOTES}, ${QuotesActionType.LIKE_QUOTE}, ${QuotesActionType.DISLIKE_QUOTE}`,
+        `Unsupported Quotes Action Type used. Supported types: ${QuotesActionType.SET_QUOTES}`,
       );
       return state;
   }

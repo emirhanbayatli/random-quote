@@ -47,12 +47,7 @@ export const PostsPage = () => {
             id: number;
             userId: number;
           }) => (
-            <QuoteCard
-              key={post.id}
-              quote={post.body}
-              author={post.title}
-              likedBy={0}
-            />
+            <QuoteCard key={post.id} quote={post.body} author={post.title} />
           ),
         )
       ) : (
